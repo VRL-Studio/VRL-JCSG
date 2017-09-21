@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-def VRL_VERSION = '0.4.3.1.0'
+String VRL_VERSION = '0.4.3.1.0'
 
 buildscript {
 
@@ -10,8 +10,13 @@ buildscript {
     }
 
     dependencies {
-        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION)
+        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.1.0')
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
 def loadProperties(String sourceFileName) {
@@ -32,7 +37,6 @@ sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 
-
 repositories {
     mavenCentral()
     jcenter()
@@ -45,6 +49,18 @@ dependencies {
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'sources')
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'javadoc')
 
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6'
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6', classifier: 'sources'
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6', classifier: 'javadoc'
+
+    compile group: 'eu.mihosoft.jcsg.ext.path', name:'jcsg-pathextensions', version: '0.2.5'
+    compile group: 'eu.mihosoft.jcsg.ext.path', name:'jcsg-pathextensions', version: '0.2.5', classifier: 'sources'
+    compile group: 'eu.mihosoft.jcsg.ext.path', name:'jcsg-pathextensions', version: '0.2.5', classifier: 'javadoc'
+
+    compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1'
+    compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'sources'
+    compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'javadoc'
+
     compile files("lib/jars/")
 }
 
@@ -52,7 +68,6 @@ dependencies {
 // create a fat-jar (class files plus dependencies
 // excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
 jar {
-
     // dependencies except VRL
     from configurations.runtime.asFileTree.
             filter({file->return !file.name.startsWith("vrl-0")}).
@@ -73,7 +88,7 @@ String getVRLDir() {
         result = System.getProperty("user.home");
         result+= "/.vrl/"
         result+= eu.mihosoft.vrl.system.Constants.VERSION_MAJOR
-        result+= "/default";
+        result+= "/default"
     } else {
         result = vrldir;
     }
@@ -82,12 +97,14 @@ String getVRLDir() {
 }
 
 // compiles and installs the vrl plugin to the specified folder
-task installVRLPlugin(dependsOn: [clean,jar]) << {
-    println(">> copying vrl plugin to: " + vrldir+"/plugin-updates")
-    copy {
-        from buildDir.getPath()+"/libs/"+rootProject.name + ".jar"
-        into vrldir+"/plugin-updates"
-        include '**/*.jar'
+task installVRLPlugin(dependsOn: [clean,jar]) {
+    doLast() {
+        println(">> copying vrl plugin to: " + getVRLDir() + "/plugin-updates")
+        copy {
+            from buildDir.getPath() + "/libs/" + rootProject.name + ".jar"
+            into getVRLDir() + "/plugin-updates"
+            include '**/*.jar'
+        }
     }
 }
 
