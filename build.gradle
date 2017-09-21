@@ -1,0 +1,93 @@
+apply plugin: 'java'
+
+def VRL_VERSION = '0.4.3.1.0'
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION)
+    }
+}
+
+def loadProperties(String sourceFileName) {
+
+    def config = new Properties()
+    def propFile = new File(projectDir,sourceFileName)
+
+    if (propFile.isFile()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            ext.set(property.key, property.value)
+        }
+    }
+}
+
+
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION)
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'sources')
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'javadoc')
+
+    compile files("lib/jars/")
+}
+
+
+// create a fat-jar (class files plus dependencies
+// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
+jar {
+
+    // dependencies except VRL
+    from configurations.runtime.asFileTree.
+            filter({file->return !file.name.startsWith("vrl-0")}).
+            files.collect { zipTree(it) }
+
+    // project class files compiled from source
+    from files(sourceSets.main.output.classesDir)
+}
+
+// loads the property file
+loadProperties('build.properties')
+
+String getVRLDir() {
+
+    String result;
+
+    if (vrldir.isEmpty()) {
+        result = System.getProperty("user.home");
+        result+= "/.vrl/"
+        result+= eu.mihosoft.vrl.system.Constants.VERSION_MAJOR
+        result+= "/default";
+    } else {
+        result = vrldir;
+    }
+
+    return result
+}
+
+// compiles and installs the vrl plugin to the specified folder
+task installVRLPlugin(dependsOn: [clean,jar]) << {
+    println(">> copying vrl plugin to: " + vrldir+"/plugin-updates")
+    copy {
+        from buildDir.getPath()+"/libs/"+rootProject.name + ".jar"
+        into vrldir+"/plugin-updates"
+        include '**/*.jar'
+    }
+}
+
