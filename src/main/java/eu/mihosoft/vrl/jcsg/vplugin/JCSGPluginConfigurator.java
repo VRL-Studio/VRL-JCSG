@@ -28,8 +28,9 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
        // you can specify packages that shall be
        // exported by using the exportPackage() method:
        //
-       exportPackage("eu.mihosoft.vrl.v3d.jcsg");
-       exportPackage("eu.mihosoft.vrl.v3d.jcsg.samples");
+       exportPackage("eu.mihosoft.jcsg", true);
+       exportPackage("eu.mihosoft.vvecmath");
+       exportPackage("eu.mihosoft.jcsg.samples", true);
 
        // describe the plugin
        setDescription("JCSG Plugin (Constructive Solid Geometry)");
