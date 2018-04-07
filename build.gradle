@@ -1,7 +1,3 @@
-apply plugin: 'java'
-
-String VRL_VERSION = '0.4.3.1.0'
-
 buildscript {
 
     repositories {
@@ -13,6 +9,18 @@ buildscript {
         classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.1.0')
     }
 }
+
+plugins {
+//    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'maven-publish'
+    id 'net.nemerosa.versioning' version '2.6.1'
+    id 'com.jfrog.bintray' version '1.7.2'
+    id 'com.github.ben-manes.versions' version '0.13.0'
+}
+
+ext.VRL_VERSION = '0.4.3.1.0'
+
+apply plugin: 'java'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.1'
@@ -36,10 +44,15 @@ def loadProperties(String sourceFileName) {
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 
 repositories {
     mavenCentral()
     jcenter()
+
+    maven { url "https://dl.bintray.com/miho/VRL" }
 }
 
 dependencies {
@@ -49,9 +62,9 @@ dependencies {
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'sources')
     compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: VRL_VERSION, classifier: 'javadoc')
 
-    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6'
-    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6', classifier: 'sources'
-    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.6', classifier: 'javadoc'
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.7'
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.7', classifier: 'sources'
+    compile group: 'eu.mihosoft.vrl.jcsg', name:'jcsg', version: '0.5.7', classifier: 'javadoc'
 
     compile group: 'eu.mihosoft.jcsg.ext.path', name:'jcsg-pathextensions', version: '0.2.5'
     compile group: 'eu.mihosoft.jcsg.ext.path', name:'jcsg-pathextensions', version: '0.2.5', classifier: 'sources'
@@ -61,20 +74,16 @@ dependencies {
     compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'sources'
     compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'javadoc'
 
-    compile files("lib/jars/")
+    compile group: 'eu.mihosoft.vrl.vrljogl', name: 'vrl-jogl', version: '0.3'
+
+    // compile files("lib/jars/")
 }
 
+apply from: 'gradle/publishing.gradle'
 
-// create a fat-jar (class files plus dependencies
-// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
 jar {
-    // dependencies except VRL
-    from configurations.runtime.asFileTree.
-            filter({file->return !file.name.startsWith("vrl-0")}).
-            files.collect { zipTree(it) }
-
     // project class files compiled from source
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.classesDirs)
 }
 
 // loads the property file

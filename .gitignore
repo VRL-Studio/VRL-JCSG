@@ -11,3 +11,5 @@ VRL-JCSG.iml
 #settings.gradle
 #src/
 /.idea/
+build
+out/

@@ -22,7 +22,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
 
     public JCSGPluginConfigurator() {
           //specify the plugin name and version
-       setIdentifier(new PluginIdentifier("JCSG", "0.2"));
+       setIdentifier(new PluginIdentifier("JCSG", "0.2.1"));
 
        // optionally allow other plugins to use the api of this plugin
        // you can specify packages that shall be
@@ -41,7 +41,8 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
                "www.mihosoft.eu", "BSD", "");
 
        // specify dependencies
-        addDependency(new PluginDependency("VRL", "0.4.2.8.6", "0.4.x"));
+       addDependency(new PluginDependency("VRL", "0.4.2.8.6", "0.4.x"));
+       addDependency(new PluginDependency("JOGL", "0.3", "x"));
     }
     
 
