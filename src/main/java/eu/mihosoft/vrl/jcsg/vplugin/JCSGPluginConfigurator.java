@@ -92,6 +92,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            
            vapi.addTypeRepresentation(SilentCSGInputType.class);
            vapi.addTypeRepresentation(CSGOutputType.class);
+           vapi.addTypeRepresentation(CSGOutputTypeJ3d.class);
            vapi.addTypeRepresentation(SilentCSGType.class);
            
        }

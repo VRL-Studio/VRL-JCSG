@@ -50,6 +50,7 @@ tasks.withType(Javadoc) {
 
 repositories {
     mavenCentral()
+    mavenLocal()
     jcenter()
 
     maven { url "https://dl.bintray.com/miho/VRL" }
@@ -74,7 +75,7 @@ dependencies {
     compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'sources'
     compile group: 'eu.mihosoft.jcsg.ext.mesh', name:'jcsg-meshextensions', version: '0.5.1', classifier: 'javadoc'
 
-    compile group: 'eu.mihosoft.vrl.vrljogl', name: 'vrl-jogl', version: '0.3'
+    compile group: 'eu.mihosoft.vrl.vrljogl', name: 'vrl-jogl', version: '0.4'
 
     // compile files("lib/jars/")
 }
@@ -106,13 +107,15 @@ String getVRLDir() {
 }
 
 // compiles and installs the vrl plugin to the specified folder
-task installVRLPlugin(dependsOn: [clean,jar]) {
-    doLast() {
+task installVRLPlugin(dependsOn: [clean,publicationVRLPluginJar]) {
+    doLast {
         println(">> copying vrl plugin to: " + getVRLDir() + "/plugin-updates")
+
         copy {
-            from buildDir.getPath() + "/libs/" + rootProject.name + ".jar"
-            into getVRLDir() + "/plugin-updates"
-            include '**/*.jar'
+            from buildDir.getPath() + "/libs/" + rootProject.name + ".vrlplugin"
+            into getVRLDir() + "/plugin-updates/"
+            include rootProject.name + ".vrlplugin"
+            rename (rootProject.name + ".vrlplugin", rootProject.name + ".jar")
         }
     }
 }

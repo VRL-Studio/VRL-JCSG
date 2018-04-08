@@ -50,8 +50,10 @@ public class CSGOutputType extends JoglType {
             for(int i = 0; i < vertexList.size(); i++) {
                 indices[i] = i;
             }
+            GLMeshCanvas meshCanvas = new GLMeshCanvas(Mesh.newInstance(vertices,indices));
+            meshCanvas.setSkipInitAnimation(true);
+            super.setViewValue(meshCanvas);
 
-            super.setViewValue(new GLMeshCanvas(Mesh.newInstance(vertices,indices)));
         }
     }
 
