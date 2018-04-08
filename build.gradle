@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.1.0')
+        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.2.3')
     }
 }
 
@@ -18,42 +18,26 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.13.0'
 }
 
-ext.VRL_VERSION = '0.4.3.1.0'
+ext.VRL_VERSION = '0.4.3.2.3'
 
 apply plugin: 'java'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
-
-def loadProperties(String sourceFileName) {
-
-    def config = new Properties()
-    def propFile = new File(projectDir,sourceFileName)
-
-    if (propFile.isFile()) {
-        config.load(new FileInputStream(propFile))
-        for (Map.Entry property in config) {
-            ext.set(property.key, property.value)
-        }
-    }
-}
-
-
 sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
 repositories {
     mavenCentral()
-    mavenLocal()
     jcenter()
-
-    maven { url "https://dl.bintray.com/miho/VRL" }
 }
 
 dependencies {
@@ -82,6 +66,19 @@ dependencies {
 
 apply from: 'gradle/publishing.gradle'
 
+def loadProperties(String sourceFileName) {
+
+    def config = new Properties()
+    def propFile = new File(projectDir,sourceFileName)
+
+    if (propFile.isFile()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            ext.set(property.key, property.value)
+        }
+    }
+}
+
 jar {
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)
@@ -107,7 +104,7 @@ String getVRLDir() {
 }
 
 // compiles and installs the vrl plugin to the specified folder
-task installVRLPlugin(dependsOn: [clean,publicationVRLPluginJar]) {
+task installVRLPlugin(dependsOn: [clean, publicationVRLPluginJar]) {
     doLast {
         println(">> copying vrl plugin to: " + getVRLDir() + "/plugin-updates")
 

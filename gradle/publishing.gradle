@@ -34,11 +34,15 @@ task publicationVRLPluginJar(type: Jar, dependsOn: jar) {
 
     extension = 'vrlplugin'
 
-    // dependencies except VRL and VRL-Jogl
-    from configurations.runtime.asFileTree.
-            filter({file->return !file.name.startsWith("vrl-0")}).
-            filter({file->return !file.name.toLowerCase().startsWith("vrl-jogl")}).
-            files.collect { zipTree(it) }
+    // dependencies except VRL and the VRL-Jogl plugin configurator
+    from {
+        configurations.runtime.asFileTree.
+                filter({ file -> return !file.name.startsWith("vrl-0") }).
+                //filter({ file -> return !file.name.toLowerCase().startsWith("vrl-jogl") }).
+                files.collect { zipTree(it) }
+    } {
+        exclude "eu/mihosoft/vrl/vrljoglplugin/PluginConfigurator.class"
+    }
 
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)

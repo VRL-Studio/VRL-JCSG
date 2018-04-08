@@ -16,8 +16,8 @@ import java.awt.*;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-@TypeInfo(input = false, output = true, style = "java3d", type = CSG.class)
-public class CSGOutputTypeJ3d extends VGeometry3DType{
+@TypeInfo(input = false, output = true, style = "j3d", type = CSG.class)
+public class CSGOutputTypeJ3d extends VGeometry3DType {
     private CSG viewValue;
     
     @Override
