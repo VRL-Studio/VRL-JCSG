@@ -18,6 +18,7 @@ public class SilentCSGInputType extends TypeTemplate{
 
     public SilentCSGInputType() {
         setValueName("CSG");
+        serialization=false;
     }
     
 }

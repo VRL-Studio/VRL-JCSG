@@ -18,6 +18,7 @@ public class SilentCSGType extends TypeTemplate{
 
     public SilentCSGType() {
         setValueName("CSG");
+        serialization=false;
     }
     
 }

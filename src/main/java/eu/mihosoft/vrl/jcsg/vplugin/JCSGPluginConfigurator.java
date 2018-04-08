@@ -22,7 +22,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
 
     public JCSGPluginConfigurator() {
           //specify the plugin name and version
-       setIdentifier(new PluginIdentifier("JCSG", "0.2.4"));
+       setIdentifier(new PluginIdentifier("JCSG", "0.2.5"));
 
        // optionally allow other plugins to use the api of this plugin
        // you can specify packages that shall be
